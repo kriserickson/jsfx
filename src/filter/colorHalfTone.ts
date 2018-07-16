@@ -47,8 +47,8 @@ namespace jsfx.filter {
     }
 
     public drawWebGL(renderer : jsfx.webgl.Renderer) : void {
-      var shader = renderer.getShader(this);
-      var properties = this.getProperties();
+      const shader = renderer.getShader(this);
+      const properties = this.getProperties();
 
       // add texture size
       properties.texSize = [renderer.getSource().width, renderer.getSource().width];
@@ -62,13 +62,13 @@ namespace jsfx.filter {
 
     public static pattern(angle : number, x : number, y : number, centerX : number, centerY : number, scale : number) {
       // float s = sin(angle), c = cos(angle);
-      var s : number = Math.sin(angle);
-      var c : number = Math.cos(angle);
+      const s : number = Math.sin(angle);
+      const c : number = Math.cos(angle);
 
       // vec2 tex = texCoord * texSize - center;
       // texCoord in webgl is between 0 and 1
-      var tX : number = x - centerX;
-      var tY : number = y - centerY;
+      const tX : number = x - centerX;
+      const tY : number = y - centerY;
 
       //vec2 point = vec2(
       //    c * tex.x - s * tex.y,
@@ -79,21 +79,21 @@ namespace jsfx.filter {
     }
 
     public iterateCanvas(helper : jsfx.util.ImageDataHelper) : void {
-      var angle = this.properties.angle;
-      var imageData = helper.getImageData();
-      var x = (helper.getIndex() / 4) % imageData.width;
-      var y = Math.floor((helper.getIndex() / 4) / imageData.width);
-      var pattern = (angle : number) : number => {
+      const angle = this.properties.angle;
+      const imageData = helper.getImageData();
+      const x = (helper.getIndex() / 4) % imageData.width;
+      const y = Math.floor((helper.getIndex() / 4) / imageData.width);
+      const pattern = (angle : number) : number => {
         return ColorHalfTone.pattern(angle, x, y, this.centerX, this.centerY, this.properties.scale);
       };
 
       // vec3 cmy = 1.0 - color.rgb;
-      var r = 1 - helper.r;
-      var g = 1 - helper.g;
-      var b = 1 - helper.b;
+      let r = 1 - helper.r;
+      let g = 1 - helper.g;
+      let b = 1 - helper.b;
 
       // float k = min(cmy.x, min(cmy.y, cmy.z));
-      var k = Math.min(r, Math.min(g, b));
+      let k = Math.min(r, Math.min(g, b));
 
       // cmy = (cmy - k) / (1.0 - k);
       r = (r - k) / (1 - k);

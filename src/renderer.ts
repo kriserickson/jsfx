@@ -1,20 +1,20 @@
 namespace jsfx {
-  var hasWebGL = (function () {
+  const hasWebGL = (function () {
     try {
-      var canvas = document.createElement("canvas");
-      return !!( canvas.getContext("webgl") || canvas.getContext("experimental-webgl"));
+      const canvas = document.createElement('canvas');
+      return !!( canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
     } catch (e) {
       return false;
     }
   })();
 
-  export function Renderer(type ? : string) : jsfx.RendererInterface {
-    if (!type) {
-      type = hasWebGL ? "webgl" : "canvas";
+  export function Renderer(type: string = '', precision:string = 'highp') : jsfx.RendererInterface {
+    if (type.length === 0) {
+      type = hasWebGL ? 'webgl' : 'canvas';
     }
 
-    if (type === "webgl") {
-      return new jsfx.webgl.Renderer();
+    if (type === 'webgl') {
+      return new jsfx.webgl.Renderer(precision);
     }
 
     return new jsfx.canvas.Renderer();

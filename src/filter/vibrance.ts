@@ -25,9 +25,9 @@ namespace jsfx.filter {
     }
 
     public iterateCanvas(helper : jsfx.util.ImageDataHelper) : void {
-      var amount = this.properties.amount;
-      var average = (helper.r + helper.g + helper.b) / 3.0;
-      var mx = Math.max(helper.r, Math.max(helper.g, helper.b));
+      const amount = this.properties.amount;
+      const average = (helper.r + helper.g + helper.b) / 3.0;
+      const mx = Math.max(helper.r, Math.max(helper.g, helper.b));
 
       helper.mix(mx, mx, mx, (mx - average) * (-amount * 3.0));
     }

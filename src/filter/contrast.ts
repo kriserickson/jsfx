@@ -29,7 +29,7 @@ namespace jsfx.filter {
     }
 
     public iterateCanvas(helper : jsfx.util.ImageDataHelper) : void {
-      var contrast = this.properties.contrast;
+      const contrast = this.properties.contrast;
 
       if (contrast > 0) {
         helper.r = (helper.r - 0.5) / (1 - contrast) + 0.5;

@@ -9,8 +9,8 @@ namespace jsfx.util {
     private y2 : number[];
 
     constructor(public points : number[]) {
-      var n : number = points.length;
-      var i : number;
+      const n : number = points.length;
+      let i : number;
       this.xa = [];
       this.ya = [];
       this.u = [];
@@ -31,13 +31,13 @@ namespace jsfx.util {
       for (i = 1; i < n - 1; ++i) {
         // This is the decomposition loop of the tri-diagonal algorithm.
         // y2 and u are used for temporary storage of the decomposed factors.
-        var wx : number = this.xa[i + 1] - this.xa[i - 1];
-        var sig : number = (this.xa[i] - this.xa[i - 1]) / wx;
-        var p : number = sig * this.y2[i - 1] + 2.0;
+        const wx : number = this.xa[i + 1] - this.xa[i - 1];
+        const sig : number = (this.xa[i] - this.xa[i - 1]) / wx;
+        const p : number = sig * this.y2[i - 1] + 2.0;
 
         this.y2[i] = (sig - 1.0) / p;
 
-        var ddydx : number =
+        const ddydx : number =
           (this.ya[i + 1] - this.ya[i]) / (this.xa[i + 1] - this.xa[i]) -
           (this.ya[i] - this.ya[i - 1]) / (this.xa[i] - this.xa[i - 1]);
 
@@ -53,9 +53,9 @@ namespace jsfx.util {
     }
 
     interpolate(x : number) : number {
-      var n : number = this.ya.length;
-      var klo : number = 0;
-      var khi : number = n - 1;
+      const n : number = this.ya.length;
+      let klo : number = 0;
+      let khi : number = n - 1;
 
       // We will find the right place in the table by means of
       // bisection. This is optimal if sequential calls to this
@@ -63,7 +63,7 @@ namespace jsfx.util {
       // are in order, and closely spaced, one would do better
       // to store previous values of klo and khi.
       while (khi - klo > 1) {
-        var k = (khi + klo) >> 1;
+        const k = (khi + klo) >> 1;
 
         if (this.xa[k] > x) {
           khi = k;
@@ -72,9 +72,9 @@ namespace jsfx.util {
         }
       }
 
-      var h : number = this.xa[khi] - this.xa[klo];
-      var a : number = (this.xa[khi] - x) / h;
-      var b : number = (x - this.xa[klo]) / h;
+      const h : number = this.xa[khi] - this.xa[klo];
+      const a : number = (this.xa[khi] - x) / h;
+      const b : number = (x - this.xa[klo]) / h;
 
       // Cubic spline polynomial is now evaluated.
       return a * this.ya[klo] + b * this.ya[khi] +

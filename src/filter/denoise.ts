@@ -44,10 +44,10 @@ namespace jsfx.filter {
     }
 
     public drawWebGL(renderer : jsfx.webgl.Renderer) : void {
-      var shader = renderer.getShader(this);
-      var properties = this.getProperties();
+        const shader = renderer.getShader(this);
+        const properties = this.getProperties();
 
-      // add texture size
+        // add texture size
       properties.texSize = [renderer.getSource().width, renderer.getSource().width];
 
       renderer.getTexture().use();

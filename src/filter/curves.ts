@@ -51,13 +51,13 @@ namespace jsfx.filter {
 
     drawWebGL(renderer : jsfx.webgl.Renderer) : void {
       // create texture data
-      var array : any[] = [];
-      for (var i = 0; i < 256; i++) {
+      const array : any[] = [];
+      for (let i = 0; i < 256; i++) {
         array.splice(array.length, 0, this.red[i], this.green[i], this.blue[i], 255);
       }
 
       // create a new texture
-      var extraTexture = renderer.createTexture();
+      const extraTexture = renderer.createTexture();
 
       // set ramp texture data
       extraTexture.initFromBytes(256, 1, array);
@@ -66,7 +66,7 @@ namespace jsfx.filter {
       extraTexture.use(1);
 
       // get the shader
-      var shader = renderer.getShader(this);
+      const shader = renderer.getShader(this);
 
       // set shader textures
       shader.textures({
@@ -81,7 +81,7 @@ namespace jsfx.filter {
     }
 
     public iterateCanvas(helper : jsfx.util.ImageDataHelper) : void {
-      var i : number = helper.getIndex();
+      let i : number = helper.getIndex();
 
       helper.r = this.red[helper.r * 255] / 255;
       helper.g = this.green[helper.g * 255] / 255;
@@ -89,10 +89,10 @@ namespace jsfx.filter {
     }
 
     static splineInterpolate(points : number[]) {
-      var interpolator : jsfx.util.SplineInterpolator = new jsfx.util.SplineInterpolator(points);
-      var array : number[] = [];
+      const interpolator : jsfx.util.SplineInterpolator = new jsfx.util.SplineInterpolator(points);
+      const array : number[] = [];
 
-      for (var i = 0; i < 256; i++) {
+      for (let i = 0; i < 256; i++) {
         array.push(Filter.clamp(0, Math.floor(interpolator.interpolate(i / 255) * 256), 255));
       }
 

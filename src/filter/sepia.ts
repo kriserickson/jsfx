@@ -30,10 +30,10 @@ namespace jsfx.filter {
     }
 
     public iterateCanvas(helper : jsfx.util.ImageDataHelper) : void {
-      var r : number = helper.r;
-      var g : number = helper.g;
-      var b : number = helper.b;
-      var amount : number = this.properties.amount;
+      const r : number = helper.r;
+      const g : number = helper.g;
+      const b : number = helper.b;
+      const amount : number = this.properties.amount;
 
       helper.r = Math.min(1.0, (r * (1.0 - (0.607 * amount))) + (g * (0.769 * amount)) + (b * (0.189 * amount)));
       helper.g = Math.min(1.0, (r * 0.349 * amount) + (g * (1.0 - (0.314 * amount))) + (b * 0.168 * amount));

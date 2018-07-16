@@ -32,12 +32,12 @@ namespace jsfx.filter {
     }
 
     public iterateCanvas(helper : jsfx.util.ImageDataHelper) : void {
-      var amount = this.properties.amount;
-      var width = helper.getImageData().width;
-      var x = (helper.getIndex() / 4) % width;
-      var y = Math.floor((helper.getIndex() / 4) / width);
-      var v : jsfx.util.Vector2 = new jsfx.util.Vector2(x, y);
-      var diff = (Noise.rand(v) - 0.5) * amount;
+      const amount = this.properties.amount;
+      const width = helper.getImageData().width;
+      const x = (helper.getIndex() / 4) % width;
+      const y = Math.floor((helper.getIndex() / 4) / width);
+      const v : jsfx.util.Vector2 = new jsfx.util.Vector2(x, y);
+      const diff = (Noise.rand(v) - 0.5) * amount;
 
       helper.r += diff;
       helper.g += diff;

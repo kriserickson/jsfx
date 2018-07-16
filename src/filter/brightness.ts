@@ -24,7 +24,7 @@ namespace jsfx.filter {
     }
 
     public iterateCanvas(helper : jsfx.util.ImageDataHelper) : void {
-      var brightness = this.properties.brightness;
+      const brightness = this.properties.brightness;
 
       helper.r += brightness;
       helper.g += brightness;

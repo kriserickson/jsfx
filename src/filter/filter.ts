@@ -1,5 +1,3 @@
-/// <reference path="filterInterface.ts"/>
-
 namespace jsfx.filter {
   export class Filter implements FilterInterface {
     protected properties : any = {};
@@ -32,8 +30,8 @@ namespace jsfx.filter {
      * @param renderer
      */
     public drawWebGL(renderer : jsfx.webgl.Renderer) : void {
-      var shader = renderer.getShader(this);
-      var properties = this.getProperties();
+      const shader = renderer.getShader(this);
+      const properties = this.getProperties();
 
       renderer.getTexture().use();
       renderer.getNextTexture().drawTo(function () {
