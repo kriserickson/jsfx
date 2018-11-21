@@ -40,10 +40,13 @@ gulp.task('watchrun', function() {
 gulp.task('build', ['compile:typescript']);
 gulp.task('compile:typescript', function() {
   tsproject
-    .src('.')
+    .src('./tsconfig.json')
+    .pipe(gulp.dest(paths.tscripts.dest))
+    .pipe(uglify())
+    .pipe(rename({ extname: '.min.js' }))
     .pipe(gulp.dest(paths.tscripts.dest));
 
-  //return gulp
+  // return gulp
   //  .src(paths.tscripts.src)
   //  .pipe(tsc({
   //    module: "commonjs",

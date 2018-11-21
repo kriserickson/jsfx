@@ -1,4 +1,8 @@
-/// <reference path="filterInterface.ts"/>
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var jsfx;
 (function (jsfx) {
     var filter;
@@ -35,15 +39,10 @@ var jsfx;
                 return Math.max(low, Math.min(value, high));
             };
             return Filter;
-        })();
+        }());
         filter.Filter = Filter;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var jsfx;
 (function (jsfx) {
     var filter;
@@ -71,7 +70,7 @@ var jsfx;
                 }
             };
             return IterableFilter;
-        })(filter_1.Filter);
+        }(filter_1.Filter));
         filter_1.IterableFilter = IterableFilter;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -154,7 +153,7 @@ var jsfx;
                     document.createElement("canvas");
             };
             return Renderer;
-        })();
+        }());
         canvas.Renderer = Renderer;
     })(canvas = jsfx.canvas || (jsfx.canvas = {}));
 })(jsfx || (jsfx = {}));
@@ -187,7 +186,7 @@ var jsfx;
                 var radius = this.properties.radius;
                 var width = imageData.width;
                 var height = imageData.height;
-                var x, y, i, p, yp, yi, yw, r_sum, g_sum, b_sum, a_sum, r_out_sum, g_out_sum, b_out_sum, a_out_sum, r_in_sum, g_in_sum, b_in_sum, a_in_sum, pr, pg, pb, pa, rbs;
+                var x, y, i, p, yp, yi, yw, r_sum, g_sum, b_sum, a_sum, r_out_sum, g_out_sum, b_out_sum, a_out_sum, r_in_sum, g_in_sum, b_in_sum, a_in_sum, pr, pg, pb, pa, rbs, stackEnd;
                 var div = radius + radius + 1;
                 var widthMinus1 = width - 1;
                 var heightMinus1 = height - 1;
@@ -197,8 +196,9 @@ var jsfx;
                 var stack = stackStart;
                 for (i = 1; i < div; i++) {
                     stack = stack.next = new BlurStack();
-                    if (i == radiusPlus1)
-                        var stackEnd = stack;
+                    if (i == radiusPlus1) {
+                        stackEnd = stack;
+                    }
                 }
                 stack.next = stackStart;
                 var stackIn = null;
@@ -358,7 +358,7 @@ var jsfx;
                 }
             };
             return Blur;
-        })(filter.Filter);
+        }(filter.Filter));
         filter.Blur = Blur;
         var mul_table = [
             512, 512, 456, 512, 328, 456, 335, 512, 405, 328, 271, 456, 388, 335, 292, 512,
@@ -403,7 +403,7 @@ var jsfx;
                 this.next = null;
             }
             return BlurStack;
-        })();
+        }());
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
 var jsfx;
@@ -423,8 +423,31 @@ var jsfx;
                 helper.b += brightness;
             };
             return Brightness;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Brightness = Brightness;
+    })(filter = jsfx.filter || (jsfx.filter = {}));
+})(jsfx || (jsfx = {}));
+var jsfx;
+(function (jsfx) {
+    var filter;
+    (function (filter) {
+        var ColorFilter = (function (_super) {
+            __extends(ColorFilter, _super);
+            function ColorFilter(r, g, b, adj) {
+                _super.call(this, null, "\n            uniform sampler2D texture;\n            uniform float r;\n            uniform float g;\n            uniform float b;\n            uniform float adj;\n            varying vec2 texCoord;\n\n            void main() {\n                vec4 color = texture2D(texture, texCoord);\n                color.r = max(0.0, min(1.0, color.r - ((color.r - r) * adj)));\n                color.g = max(0.0, min(1.0, color.g - ((color.g - g) * adj)));\n                color.b = max(0.0, min(1.0, color.b - ((color.b - b) * adj)));\n\n                gl_FragColor = color;\n            }\n        ");
+                this.properties.r = filter.Filter.clamp(0, r / 255, 1);
+                this.properties.g = filter.Filter.clamp(0, g / 255, 1);
+                this.properties.b = filter.Filter.clamp(0, b / 255, 1);
+                this.properties.adj = filter.Filter.clamp(0, adj, 1);
+            }
+            ColorFilter.prototype.iterateCanvas = function (helper) {
+                helper.r = Math.min(1, Math.max(0, helper.r - ((helper.r - this.properties.r) * this.properties.adj)));
+                helper.g = Math.min(1, Math.max(0, helper.g - ((helper.g - this.properties.g) * this.properties.adj)));
+                helper.b = Math.min(1, Math.max(0, helper.b - ((helper.b - this.properties.b) * this.properties.adj)));
+            };
+            return ColorFilter;
+        }(filter.IterableFilter));
+        filter.ColorFilter = ColorFilter;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
 var jsfx;
@@ -482,7 +505,7 @@ var jsfx;
                 helper.b = 1 - b - k;
             };
             return ColorHalfTone;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.ColorHalfTone = ColorHalfTone;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -510,7 +533,7 @@ var jsfx;
                 }
             };
             return Contrast;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Contrast = Contrast;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -569,7 +592,7 @@ var jsfx;
                 return array;
             };
             return Curves;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Curves = Curves;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -626,7 +649,7 @@ var jsfx;
                 }
             };
             return Denoise;
-        })(filter.Filter);
+        }(filter.Filter));
         filter.Denoise = Denoise;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -665,7 +688,7 @@ var jsfx;
                 helper.b = value;
             };
             return DotScreen;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.DotScreen = DotScreen;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -692,7 +715,7 @@ var jsfx;
                 helper.b = rgb.dotScalars(this.weights.y, this.weights.z, this.weights.x);
             };
             return Hue;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Hue = Hue;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -703,13 +726,10 @@ var jsfx;
         var Multiply = (function (_super) {
             __extends(Multiply, _super);
             function Multiply(r, g, b) {
-                _super.call(this, null, "\n            uniform sampler2D texture;\n            uniform float r;\n            uniform float g;\n            uniform float b;\n            varying vec2 texCoord;\n\n            void main() {\n                vec4 color = texture2D(texture, texCoord);\n                color.r *= r;\n                color.g *= g;\n                color.b *= b;\n\n                gl_FragColor = color;\n            }\n        ");
-                this.r = r;
-                this.g = g;
-                this.b = b;
-                this.properties.r = filter.Filter.clamp(0, r, 1);
-                this.properties.g = filter.Filter.clamp(0, g, 1);
-                this.properties.b = filter.Filter.clamp(0, b, 1);
+                _super.call(this, null, "\n            uniform sampler2D texture;\n            uniform float r;\n            uniform float g;\n            uniform float b;\n            varying vec2 texCoord;\n\n            void main() {\n                vec4 color = texture2D(texture, texCoord);\n                color.r = min(1.0, color.r * r);\n                color.g = min(1.0, color.g * g);\n                color.b = min(1.0, color.b * b);\n\n                gl_FragColor = color;\n            }\n        ");
+                this.properties.r = filter.Filter.clamp(0, r, 2);
+                this.properties.g = filter.Filter.clamp(0, g, 2);
+                this.properties.b = filter.Filter.clamp(0, b, 2);
             }
             Multiply.prototype.iterateCanvas = function (helper) {
                 helper.r *= this.properties.r;
@@ -717,7 +737,7 @@ var jsfx;
                 helper.b *= this.properties.b;
             };
             return Multiply;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Multiply = Multiply;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -749,7 +769,7 @@ var jsfx;
                 return x - Math.floor(x);
             };
             return Noise;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Noise = Noise;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -778,7 +798,7 @@ var jsfx;
                 }
             };
             return Saturation;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Saturation = Saturation;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -802,7 +822,7 @@ var jsfx;
                 helper.b = Math.min(1.0, (r * 0.272 * amount) + (g * 0.534 * amount) + (b * (1.0 - (0.869 * amount))));
             };
             return Sepia;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Sepia = Sepia;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -852,7 +872,7 @@ var jsfx;
                 renderer.setImageData(imageData);
             };
             return UnsharpMask;
-        })(filter.Filter);
+        }(filter.Filter));
         filter.UnsharpMask = UnsharpMask;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -873,7 +893,7 @@ var jsfx;
                 helper.mix(mx, mx, mx, (mx - average) * (-amount * 3.0));
             };
             return Vibrance;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Vibrance = Vibrance;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -895,7 +915,7 @@ var jsfx;
                 var x = (helper.getIndex() / 4) % imageData.width;
                 var y = Math.floor((helper.getIndex() / 4) / imageData.width);
                 var distance = Vignette.distance(x / imageData.width, y / imageData.height, 0.5, 0.5);
-                var amount = Vignette.smoothstep(0.8, size * 0.799, distance * (amount + size));
+                amount = Vignette.smoothstep(0.8, size * 0.799, distance * (amount + size));
                 helper.r *= amount;
                 helper.g *= amount;
                 helper.b *= amount;
@@ -908,7 +928,7 @@ var jsfx;
                 return x * x * (3 - 2 * x);
             };
             return Vignette;
-        })(filter.IterableFilter);
+        }(filter.IterableFilter));
         filter.Vignette = Vignette;
     })(filter = jsfx.filter || (jsfx.filter = {}));
 })(jsfx || (jsfx = {}));
@@ -916,19 +936,21 @@ var jsfx;
 (function (jsfx) {
     var hasWebGL = (function () {
         try {
-            var canvas = document.createElement("canvas");
-            return !!(canvas.getContext("webgl") || canvas.getContext("experimental-webgl"));
+            var canvas_1 = document.createElement('canvas');
+            return !!(canvas_1.getContext('webgl') || canvas_1.getContext('experimental-webgl'));
         }
         catch (e) {
             return false;
         }
     })();
-    function Renderer(type) {
-        if (!type) {
-            type = hasWebGL ? "webgl" : "canvas";
+    function Renderer(type, precision) {
+        if (type === void 0) { type = ''; }
+        if (precision === void 0) { precision = 'highp'; }
+        if (type.length === 0) {
+            type = hasWebGL ? 'webgl' : 'canvas';
         }
-        if (type === "webgl") {
-            return new jsfx.webgl.Renderer();
+        if (type === 'webgl') {
+            return new jsfx.webgl.Renderer(precision);
         }
         return new jsfx.canvas.Renderer();
     }
@@ -955,7 +977,7 @@ var jsfx;
             configurable: true
         });
         return Source;
-    })();
+    }());
     jsfx.Source = Source;
 })(jsfx || (jsfx = {}));
 var jsfx;
@@ -1000,7 +1022,7 @@ var jsfx;
                 return x * (1 - a) + y * a;
             };
             return ImageDataHelper;
-        })();
+        }());
         util.ImageDataHelper = ImageDataHelper;
     })(util = jsfx.util || (jsfx.util = {}));
 })(jsfx || (jsfx = {}));
@@ -1060,7 +1082,7 @@ var jsfx;
                     ((a * a * a - a) * this.y2[klo] + (b * b * b - b) * this.y2[khi]) * (h * h) / 6.0;
             };
             return SplineInterpolator;
-        })();
+        }());
         util.SplineInterpolator = SplineInterpolator;
     })(util = jsfx.util || (jsfx.util = {}));
 })(jsfx || (jsfx = {}));
@@ -1077,7 +1099,7 @@ var jsfx;
                 return this.x * x + this.y * y;
             };
             return Vector2;
-        })();
+        }());
         util.Vector2 = Vector2;
     })(util = jsfx.util || (jsfx.util = {}));
 })(jsfx || (jsfx = {}));
@@ -1127,7 +1149,7 @@ var jsfx;
                 return this.x * x + this.y * y + this.z * z;
             };
             return Vector3;
-        })();
+        }());
         util.Vector3 = Vector3;
     })(util = jsfx.util || (jsfx.util = {}));
 })(jsfx || (jsfx = {}));
@@ -1136,9 +1158,11 @@ var jsfx;
     var webgl;
     (function (webgl) {
         var Renderer = (function () {
-            function Renderer() {
-                this.canvas = document.createElement("canvas");
-                this.gl = this.canvas.getContext("experimental-webgl", { premultipliedAlpha: false });
+            function Renderer(precision) {
+                this.precision = precision;
+                this.canvas = document.createElement('canvas');
+                var contextAttributes = { premultipliedAlpha: false };
+                this.gl = (this.canvas.getContext('webgl', contextAttributes) || this.canvas.getContext('experimental-webgl', contextAttributes));
                 this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
                 this.source = null;
                 this.sourceTexture = null;
@@ -1191,17 +1215,17 @@ var jsfx;
                 var cacheKey = filter.getVertexSource() + filter.getFragmentSource();
                 return this.gl.shaderCache.hasOwnProperty(cacheKey) ?
                     this.gl.shaderCache[cacheKey] :
-                    new webgl.Shader(this.gl, filter.getVertexSource(), filter.getFragmentSource());
+                    new webgl.Shader(this.gl, filter.getVertexSource(), filter.getFragmentSource(), this.precision);
             };
             Renderer.prototype.getDefaultShader = function () {
                 if (!this.gl.shaderCache.def) {
-                    this.gl.shaderCache.def = new webgl.Shader(this.gl);
+                    this.gl.shaderCache.def = new webgl.Shader(this.gl, null, null, this.precision);
                 }
                 return this.gl.shaderCache.def;
             };
             Renderer.prototype.getFlippedShader = function () {
                 if (!this.gl.shaderCache.flipped) {
-                    this.gl.shaderCache.flipped = new webgl.Shader(this.gl, null, "\n                uniform sampler2D texture;\n                varying vec2 texCoord;\n\n                void main() {\n                    gl_FragColor = texture2D(texture, vec2(texCoord.x, 1.0 - texCoord.y));\n                }\n            ");
+                    this.gl.shaderCache.flipped = new webgl.Shader(this.gl, null, "\n                uniform sampler2D texture;\n                varying vec2 texCoord;\n\n                void main() {\n                    gl_FragColor = texture2D(texture, vec2(texCoord.x, 1.0 - texCoord.y));\n                }\n            ", this.precision);
                 }
                 return this.gl.shaderCache.flipped;
             };
@@ -1222,7 +1246,7 @@ var jsfx;
                 this.textures = null;
             };
             return Renderer;
-        })();
+        }());
         webgl.Renderer = Renderer;
     })(webgl = jsfx.webgl || (jsfx.webgl = {}));
 })(jsfx || (jsfx = {}));
@@ -1231,11 +1255,11 @@ var jsfx;
     var webgl;
     (function (webgl) {
         var Shader = (function () {
-            function Shader(gl, vertexSource, fragmentSource) {
+            function Shader(gl, vertexSource, fragmentSource, precision) {
                 this.gl = gl;
                 this.vertexSource = vertexSource || Shader.defaultVertexSource;
                 this.fragmentSource = fragmentSource || Shader.defaultFragmentSource;
-                this.fragmentSource = "precision highp float;" + this.fragmentSource;
+                this.fragmentSource = "precision " + precision + " float;" + this.fragmentSource;
                 this.vertexAttribute = null;
                 this.texCoordAttribute = null;
                 this.program = gl.createProgram();
@@ -1248,54 +1272,54 @@ var jsfx;
             }
             Shader.prototype.textures = function (textures) {
                 this.gl.useProgram(this.program);
-                for (var name in textures) {
-                    if (!textures.hasOwnProperty(name)) {
+                for (var name_1 in textures) {
+                    if (!textures.hasOwnProperty(name_1)) {
                         continue;
                     }
-                    this.gl.uniform1i(this.gl.getUniformLocation(this.program, name), textures[name]);
+                    this.gl.uniform1i(this.gl.getUniformLocation(this.program, name_1), textures[name_1]);
                 }
                 return this;
             };
             Shader.prototype.uniforms = function (uniforms) {
                 this.gl.useProgram(this.program);
-                for (var name in uniforms) {
-                    if (!uniforms.hasOwnProperty(name)) {
+                for (var name_2 in uniforms) {
+                    if (!uniforms.hasOwnProperty(name_2)) {
                         continue;
                     }
-                    var location = this.gl.getUniformLocation(this.program, name);
-                    if (location === null) {
+                    var location_1 = this.gl.getUniformLocation(this.program, name_2);
+                    if (location_1 === null) {
                         continue;
                     }
-                    var value = uniforms[name];
+                    var value = uniforms[name_2];
                     if (isArray(value)) {
                         switch (value.length) {
                             case 1:
-                                this.gl.uniform1fv(location, new Float32Array(value));
+                                this.gl.uniform1fv(location_1, new Float32Array(value));
                                 break;
                             case 2:
-                                this.gl.uniform2fv(location, new Float32Array(value));
+                                this.gl.uniform2fv(location_1, new Float32Array(value));
                                 break;
                             case 3:
-                                this.gl.uniform3fv(location, new Float32Array(value));
+                                this.gl.uniform3fv(location_1, new Float32Array(value));
                                 break;
                             case 4:
-                                this.gl.uniform4fv(location, new Float32Array(value));
+                                this.gl.uniform4fv(location_1, new Float32Array(value));
                                 break;
                             case 9:
-                                this.gl.uniformMatrix3fv(location, false, new Float32Array(value));
+                                this.gl.uniformMatrix3fv(location_1, false, new Float32Array(value));
                                 break;
                             case 16:
-                                this.gl.uniformMatrix4fv(location, false, new Float32Array(value));
+                                this.gl.uniformMatrix4fv(location_1, false, new Float32Array(value));
                                 break;
                             default:
-                                throw "dont't know how to load uniform \"" + name + "\" of length " + value.length;
+                                throw "dont't know how to load uniform \"" + name_2 + "\" of length " + value.length;
                         }
                     }
                     else if (isNumber(value)) {
-                        this.gl.uniform1f(location, value);
+                        this.gl.uniform1f(location_1, value);
                     }
                     else {
-                        throw "attempted to set uniform \"" + name + "\" to invalid value " + (value || "undefined").toString();
+                        throw "attempted to set uniform \"" + name_2 + "\" to invalid value " + (value || "undefined").toString();
                     }
                 }
                 return this;
@@ -1338,7 +1362,7 @@ var jsfx;
             Shader.defaultVertexSource = "\nattribute vec2 vertex;\nattribute vec2 _texCoord;\nvarying vec2 texCoord;\n\nvoid main() {\n    texCoord = _texCoord;\n    gl_Position = vec4(vertex * 2.0 - 1.0, 0.0, 1.0);\n}";
             Shader.defaultFragmentSource = "\nuniform sampler2D texture;\nvarying vec2 texCoord;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, texCoord);\n}";
             return Shader;
-        })();
+        }());
         webgl.Shader = Shader;
         function compileSource(gl, type, source) {
             var shader = gl.createShader(type);
@@ -1425,7 +1449,10 @@ var jsfx;
                 return texture;
             };
             return Texture;
-        })();
+        }());
         webgl.Texture = Texture;
     })(webgl = jsfx.webgl || (jsfx.webgl = {}));
 })(jsfx || (jsfx = {}));
+if (typeof module !== 'undefined') {
+    module.exports = jsfx;
+}

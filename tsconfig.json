@@ -12,6 +12,7 @@
     "src/filter/filter.ts",
     "src/filter/iterableFilterInterface.ts",
     "src/filter/iterableFilter.ts",
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "exports.ts"
   ]
 }

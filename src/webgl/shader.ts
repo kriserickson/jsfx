@@ -24,13 +24,13 @@ void main() {
         private texCoordAttribute: any;
         private program: WebGLProgram;
 
-        constructor(private gl: WebGLRenderingContext, vertexSource: string|null, fragmentSource: string|null, precision:string) {
+        constructor(private gl: WebGLRenderingContext, vertexSource: string, fragmentSource: string, precision: string) {
             // get the shader source
             this.vertexSource = vertexSource || Shader.defaultVertexSource;
             this.fragmentSource = fragmentSource || Shader.defaultFragmentSource;
 
             // set precision
-            this.fragmentSource = 'precision ' + precision + ' float;' + this.fragmentSource;
+            this.fragmentSource = `precision ${precision} float;${this.fragmentSource}`;
 
             // init vars
             this.vertexAttribute = null;
